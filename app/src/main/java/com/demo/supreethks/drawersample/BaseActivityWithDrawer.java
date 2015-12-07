@@ -3,13 +3,16 @@ package com.demo.supreethks.drawersample;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -51,7 +54,14 @@ public abstract class BaseActivityWithDrawer extends AppCompatActivity {
                     leftDrawer,
                     R.string.app_name,
                     R.string.app_name
-            );
+            ) {
+
+                @Override
+                public void onDrawerClosed(View drawerView) {
+                    super.onDrawerClosed(drawerView);
+                }
+            };
+
 
             leftDrawer.setDrawerListener(mDrawerToggle);
 
@@ -63,7 +73,8 @@ public abstract class BaseActivityWithDrawer extends AppCompatActivity {
             item1.setClickHandler(new SliderMenuItem.MenuItemClickHandler() {
                 @Override
                 public void handleMenuClick() {
-                    startActivity(new Intent(BaseActivityWithDrawer.this, MainActivity.class));
+
+                    startDrawerActivity(MainActivity.class);
                 }
             });
 
@@ -73,7 +84,7 @@ public abstract class BaseActivityWithDrawer extends AppCompatActivity {
             item2.setClickHandler(new SliderMenuItem.MenuItemClickHandler() {
                 @Override
                 public void handleMenuClick() {
-                    startActivity(new Intent(BaseActivityWithDrawer.this, MainActivity2.class));
+                    startDrawerActivity(MainActivity2.class);
                 }
             });
 
@@ -83,7 +94,7 @@ public abstract class BaseActivityWithDrawer extends AppCompatActivity {
             item3.setClickHandler(new SliderMenuItem.MenuItemClickHandler() {
                 @Override
                 public void handleMenuClick() {
-                    startActivity(new Intent(BaseActivityWithDrawer.this, MainActivity3.class));
+                    startDrawerActivity(MainActivity3.class);
                 }
             });
 
@@ -97,6 +108,18 @@ public abstract class BaseActivityWithDrawer extends AppCompatActivity {
             }
         }
 
+    }
+
+    private void startDrawerActivity(final Class activity) {
+        leftDrawer.closeDrawer(GravityCompat.START);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(BaseActivityWithDrawer.this, activity));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            }
+        }, 200);
     }
 
     @Override
